@@ -23,6 +23,9 @@ function BookListItem(props){
                 <div className="media-body">
                     <div className="d-flex w-100 justify-content-between">
                         <h5 className="mt-0">{b.title || "loading"} </h5>
+                        <div className="col">
+                            <p><small>{b.snippet}</small></p>
+                        </div>
                         <div className="d-flex w-25 justify-content-between">
                             <span> {b.status}</span>
                             <span>{b.priority}</span>

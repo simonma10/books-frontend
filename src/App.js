@@ -197,13 +197,27 @@ class App extends Component {
 	}
 
 	handleGoogleBookSelect(id){
+		let filter = this.state.googleBooksData.filter(book => book.googleBooksId === id)
+		let f = filter[0]
+		let author = f.authors.join()
 		this.setState({
 			activeBook:{
 				...this.state.activeBook,
-				googleBooksId: id
+				googleBooksId: id,
+				title: f.title,
+				author: author,
+				categories: f.categories,
+				description: f.description,
+				isbn10: f.isbn10,
+				isbn13: f.isbn13,
+				pages: f.pages,
+				publisher: f.publisher,
+				snippet: f.snippet
 			}
 		})
 	}
+
+	
 
 	render(){
 		return (

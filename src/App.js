@@ -19,7 +19,7 @@ class App extends Component {
 				title:"",
 				author: "",
 				year: 0,
-				status: "",
+				status: "none",
 				priority: 0,
 				googleBooksId:""
 			},
@@ -267,8 +267,9 @@ class App extends Component {
 	}
 
 	async handleSelectChange(e, id){
-		let v = e.target.getAttribute("dataValue")
-		console.log(v, id)
+		//let v = e.target.getAttribute("dataValue")
+		let v = e.target.value
+		//console.log(v, id)
 		for (let i = 0; i < this.state.books.length; i ++){
 			if (this.state.books[i]._id === id){
 				await this.setActiveBook(id)

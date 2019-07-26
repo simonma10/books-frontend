@@ -55,7 +55,7 @@ function BookListItem(props){
                                     <div className="col-6">
 
                                         <div className="mr-1 mb-4"> 
-                                            <select value={b.status} onChange={(e)=>{props.selectHandler(e, b._id)}}>
+                                            <select value={b.status || ""} onChange={(e)=>{props.selectHandler(e, b._id)}}>
                                                 <option value="wishlist">Wishlist</option>
                                                 <option value="onOrder">On Order</option>
                                                 <option value="purchased">Purchased</option>

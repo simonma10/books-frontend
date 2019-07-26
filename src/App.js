@@ -13,6 +13,7 @@ class App extends Component {
 		super()
 		this.state={
 			books:[],
+			booksCache:[],
 			activeBook: {
 				_id: "",
 				title:"",
@@ -27,7 +28,9 @@ class App extends Component {
 			yesNoModal:{
 				text:'Do you really want to delete '
 			},
-			googleBooksData: {}
+			googleBooksData: {},
+			statusFilter: "none",
+			priorityFilter: "none"
 		}
 
 		this.handleListItemClick = this.handleListItemClick.bind(this)
@@ -39,14 +42,19 @@ class App extends Component {
 		this.handleNewClick = this.handleNewClick.bind(this)
 		this.handleGoogleLookup = this.handleGoogleLookup.bind(this)
 		this.handleGoogleBookSelect = this.handleGoogleBookSelect.bind(this)
+		this.handleSelectChange = this.handleSelectChange.bind(this)
+		this.handleStatusFilterChange = this.handleStatusFilterChange.bind(this)
+		this.handlePriorityFilterChange = this.handlePriorityFilterChange.bind(this)
 	}
 
 	componentDidMount(){
 		this.getBookList()
 
-		// Initialize Bootstrap tooltips
+		// Initialize Bootstrap tooltips and popovers
 		window.$(function () {
 			window.$('[data-toggle="tooltip"]').tooltip()
+			window.$('[data-toggle="popover"]').popover()
+			window.$('.toast').toast()
 		})
 	}
 
@@ -56,15 +64,17 @@ class App extends Component {
 			activeBook: result[0],
 			modalMode: "edit"
 		})
-		this.getGoogleBooksData(result[0].title)
+		//this.getGoogleBooksData(result[0].title)
 	}
 
-	getBookList(){
-		const url = CONFIG.baseUrl
+	getBookList(q = ""){
+		let param = (q === "" ? "" : "?title=" + q )
+		const url = CONFIG.baseUrl + param
         axios.get(url)
       		.then((response) => {
         	this.setState({
-          		books: response.data
+				books: response.data,
+				booksCache: response.data
         	})
       	})
 		.catch((error) => {
@@ -72,6 +82,39 @@ class App extends Component {
 				error: true
 			})
 		});
+	}
+
+	filterBookList(type, value){
+		let filteredList=[]
+		if (type === "status"){
+			if (value === "none"){
+				// reset the filtered list
+				filteredList = this.state.booksCache
+				// reset the value of the other filter
+				this.setState({
+					priorityFilter: "none"
+				})
+			} else {
+				filteredList = this.state.booksCache.filter(book => book.status === value)
+			}
+			
+		} else if (type === "priority"){
+			if (value === "none"){
+				filteredList = this.state.booksCache
+				// reset the value of the other filter
+				this.setState({
+					statusFilter: "none"
+				})
+			} else {
+				filteredList = this.state.booksCache.filter(book => book.priority === parseInt(value))
+			}
+			
+		}
+		if (filteredList !== []){
+			this.setState({
+				books: filteredList
+			})
+		}
 	}
 
 	createBook(book){
@@ -167,10 +210,14 @@ class App extends Component {
 		this.setState({
 			searchTerm:value
 		})
+		if (value === "") {
+			this.getBookList()
+		}
 	}
 
 	handleSearchClick(e){
-		console.log('handleSearchClick', this.state.searchTerm)
+		//console.log('handleSearchClick', this.state.searchTerm)
+		this.getBookList(this.state.searchTerm)
 	}
 
 	deleteActiveBook(){
@@ -212,18 +259,67 @@ class App extends Component {
 				isbn13: f.isbn13,
 				pages: f.pages,
 				publisher: f.publisher,
-				snippet: f.snippet
+				snippet: f.snippet,
+				subtitle: f.subtitle,
+				date: f.date
 			}
 		})
 	}
 
+	async handleSelectChange(e, id){
+		let v = e.target.getAttribute("dataValue")
+		console.log(v, id)
+		for (let i = 0; i < this.state.books.length; i ++){
+			if (this.state.books[i]._id === id){
+				await this.setActiveBook(id)
+				
+				await this.setState({
+					activeBook: {
+						...this.state.activeBook,
+						status: v
+					}	
+				})
+				
+				await this.updateBook(this.state.activeBook)
+				
+			}
+		}
+
+	}
+
+	handleStatusFilterChange(e){
+		this.setState({
+			statusFilter: e
+		})
+		this.filterBookList("status", e)
+	}
+
+	handlePriorityFilterChange(e){
+		this.setState({
+			priorityFilter: e
+		})
+		this.filterBookList("priority", e)	
+	}
 	
 
 	render(){
 		return (
 			<div>
-				<NavBar handleSearchClick={this.handleSearchClick} searchTerm={this.state.searchTerm} handleSearchChange={this.handleSearchChange}></NavBar>
-				<BookList books={this.state.books} clickHandler={this.handleListItemClick} newHandler={this.handleNewClick}></BookList>
+				<NavBar 
+					handleSearchClick={this.handleSearchClick} 
+					searchTerm={this.state.searchTerm} 
+					handleSearchChange={this.handleSearchChange}
+					statusFilter={this.state.statusFilter}
+					handleStatusFilterChange={this.handleStatusFilterChange}
+					priorityFilter={this.state.priorityFilter}
+					handlePriorityFilterChange={this.handlePriorityFilterChange}
+				></NavBar>
+				<BookList 
+					books={this.state.books}
+					clickHandler={this.handleListItemClick}
+					selectHandler={this.handleSelectChange}
+					newHandler={this.handleNewClick}
+				></BookList>
 				<BookEditModal
 					book={this.state.activeBook}
 					handleChange={this.handleEditModalChange}
@@ -234,6 +330,10 @@ class App extends Component {
 					handleGoogleBookSelect={this.handleGoogleBookSelect}
 				></BookEditModal>
 				<YesNoModal msg={this.state.yesNoModal.text + this.state.activeBook.title + '?'} handleOkClick={this.deleteActiveBook} ></YesNoModal>
+				<footer >
+					<p></p>
+					<p></p>
+				</footer>
 			</div>
 		  );
 

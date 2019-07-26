@@ -126,25 +126,3 @@ class BookEditModal extends Component {
 }
 
 export default BookEditModal
-
-
-/*
-  <label htmlFor="bookTitle"><span id="titleHelp" className="form-text text-muted">Book Title</span></label>
-                                            <input type="text" className="form-control mb-2" id="bookTitle" aria-describedby="titleHelp" placeholder="Book Title" name="title" value={b.title} onChange={this.handleChange}/>
-                                            <button type="button" className="btn btn-secondary">Google</button>
-
-
-
-                                             <div className="form-group col">
-                                        <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" id="basic-addon1">@</span>
-                                            </div>
-                                            <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" />
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-primary" type="button" id="button-addon1">Button</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-*/

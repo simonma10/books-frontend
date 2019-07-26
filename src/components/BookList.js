@@ -8,7 +8,7 @@ class BookList extends Component {
         if(this.props.books){
             //console.log(this.props.books)
             return this.props.books.map((b)=>[
-                <BookListItem book={b} key={b._id} clickHandler={this.props.clickHandler}></BookListItem>
+                <BookListItem book={b} key={b._id} clickHandler={this.props.clickHandler} selectHandler={this.props.selectHandler}></BookListItem>
            ]
                
            )
@@ -19,20 +19,24 @@ class BookList extends Component {
         return (
             <div className="row justify-content-center">
                 <div className="col-10">
-                    <ul className="list-group">
+                    <div className="accordion" id="accordionList">
                         {this.renderBookListItems()}
-                    </ul>
+                    </div>
                     <div className="d-flex justify-content-end">
                         <div className="mr-2">
                             <span data-toggle="tooltip" data-placement="top" title="new book">
                                 <span 
-                                    style={{fontSize: "1.2em"}}
                                     className="mr-3 text-success"
                                     data-toggle="modal"
                                     data-target={"#" + CONFIG.modalName}
                                     onClick={()=>{this.props.newHandler()}}
                                 >
-                                    <i className="far fa-plus-square"></i>
+                                    <span style={{fontSize: "1.2em"}}>
+                                        <i className="far fa-plus-square"></i>
+                                    </span>
+                                    <span className="ml-2">Add</span>
+                                    
+
                                 </span>
                             </span>
                         </div>

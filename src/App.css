@@ -2,3 +2,13 @@
   max-width: 48px;
   max-height: auto;
 }
+
+footer {
+  min-height: 200px;
+}
+
+select{
+  border-color: rgb(206, 212, 218);
+  color: rgb(73, 80, 87);
+  font-weight: 400;
+}

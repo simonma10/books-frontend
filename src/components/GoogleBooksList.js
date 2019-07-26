@@ -19,15 +19,17 @@ function GoogleBooksList(props){
 
 				<tbody>
 			
-					{props.books.map((book)=>{
+					{props.books.map((book, index)=>{
 						return (
-							<tr key={book.googleBooksId}>
+							<tr key={index}>
 								<th scope="row"><small>{book.title}</small></th>
 								<td><small>{book.subtitle}</small></td>
-								<td><small>{book.authors}</small></td>
-								<td><input type="checkbox" className="form-check-input" id={book.googleBooksId} onClick={function(){
-									props.handleGoogleBookSelect(book.googleBooksId)
-									}} /></td>
+								<td><small>{book.authors.join()}</small></td>
+								<td>
+									<span className="text-secondary" onClick={function(){ props.handleGoogleBookSelect(book.googleBooksId)}}>
+										<i class="fas fa-arrow-circle-right"></i>
+									</span>
+								</td>
 						
 							</tr>
 						)

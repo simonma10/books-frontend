@@ -1,7 +1,12 @@
+
+require('dotenv').config()
+
+const API_HOST = process.env.API_HOST || "https://limitless-headland-66330.herokuapp.com"
+
 const CONFIG = {
     modalName: "bookEditModal",
-    baseUrl: "http://localhost:4000/api/v1/books",
-    searchUrl: "http://localhost:4000/api/v1/external/google/volumes",
+    baseUrl: API_HOST + "/api/v1/books",
+    searchUrl: API_HOST + "/api/v1/external/google/volumes",
     statusOptions: [
         {name: "None", value: "none"},
         {name: "Wishlist", value: "wishlist" },

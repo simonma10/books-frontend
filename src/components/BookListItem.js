@@ -15,8 +15,11 @@ function BookListItem(props){
 
     // Google's snippet field contains escaped quote characters.  
     // Replace these with apostrophe and speech marks
-    let snippet = b.snippet.replace(/&quot;/g, '"')
-    snippet = snippet.replace(/&#39;/g, "'")
+    let snippet = ""
+    if(b.snippet){
+        snippet = b.snippet.replace(/&quot;/g, '"')
+        snippet = snippet.replace(/&#39;/g, "'")
+    }
 
     return (
         <div className="card">

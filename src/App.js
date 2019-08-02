@@ -22,7 +22,8 @@ class App extends Component {
 				year: 0,
 				status: "none",
 				priority: 0,
-				googleBooksId:""
+				googleBooksId:"",
+				userid:""
 			},
 			modalMode:"edit",
 			searchTerm:"",
@@ -148,10 +149,11 @@ class App extends Component {
 		}
 	}
 
-	createBook(book){
+	async createBook(book){
 		//console.log(book)
 		const url = CONFIG.baseUrl
-		axios.post(url, book)
+		const requestOptions = await this.getAuth()
+		axios.post(url, book, requestOptions)
       		.then((response) => {
         	if (response.status === 200){
 				console.log(book.title, "created successfully")
@@ -165,9 +167,10 @@ class App extends Component {
 		});
 	}
 
-	deleteBook(id){
+	async deleteBook(id){
 		const url = CONFIG.baseUrl + "?id=" + id
-		axios.delete(url)
+		const requestOptions = await this.getAuth()
+		axios.delete(url, requestOptions)
       		.then((response) => {
         	if (response.status === 200){
 				console.log("deleted successfully")
@@ -181,9 +184,10 @@ class App extends Component {
 		});
 	}
 
-	updateBook(book){
+	async updateBook(book){
 		const url = CONFIG.baseUrl
-		axios.patch(url, book)
+		const requestOptions = await this.getAuth()
+		axios.patch(url, book, requestOptions)
       		.then((response) => {
         	if (response.status === 200){
 				console.log(book.title, "updated successfully")
@@ -265,7 +269,8 @@ class App extends Component {
 				author: "",
 				year: 0,
 				status: "",
-				priority: 0
+				priority: 0,
+				userid: this.state.user._id
 			},
 			googleBooksData: {}
 		})
@@ -375,6 +380,7 @@ class App extends Component {
 					password:""
 				}
 			})
+			this.getBookList()
 
       	})
 		.catch((error) => {
@@ -386,6 +392,18 @@ class App extends Component {
 
 	handleLogout(){
 		this.setState({
+			books:[],
+			booksCache:[],
+			activeBook: {
+				_id: "",
+				title:"",
+				author: "",
+				year: 0,
+				status: "none",
+				priority: 0,
+				googleBooksId:"",
+				userid:""
+			},
 			user:{
 				_id:"",
 				username:"",

@@ -77,8 +77,6 @@ class App extends Component {
 	}
 
 	componentDidMount(){
-		
-		
 		this.getBookList()
 		// Initialize Bootstrap tooltips and popovers
 		window.$(function () {
@@ -201,10 +199,11 @@ class App extends Component {
 		});
 	}
 
-	getGoogleBooksData(title){
+	async getGoogleBooksData(title){
 		//console.log(book)
 		const url = CONFIG.searchUrl + "?q=" + title
-		axios.get(url)
+		const requestOptions = await this.getAuth()
+		axios.get(url, requestOptions)
       		.then((response) => {
 				//console.log(response.data)
 				this.setState({

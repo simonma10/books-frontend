@@ -20,6 +20,8 @@ Preview Google Books details before adding description
 
 Use notifications for book updates, deletes, creates.
 
+Spinner on load
+
 Mobile app to read barcodes and record book details.
 
 Fix error on Search box Enter key pressed: Uncaught TypeError: Cannot read property 'type' of undefined

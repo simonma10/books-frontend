@@ -62,7 +62,10 @@ class App extends Component {
 		this.handleLoginSubmit = this.handleLoginSubmit.bind(this)
 		this.handleLogout = this.handleLogout.bind(this)
 
-		this.state.user = JSON.parse(localStorage.getItem('user'))
+		const localUser = JSON.parse(localStorage.getItem('user'))
+		if(localUser){
+			this.state.user = localUser
+		}
 		/* if(user && user.username !== ""){
 			this.setState({
 				user: {

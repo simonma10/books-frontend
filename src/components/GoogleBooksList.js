@@ -27,7 +27,7 @@ function GoogleBooksList(props){
 								<td><small>{book.authors ? book.authors.join() : ""}</small></td>
 								<td>
 									<span className="text-secondary" onClick={function(){ props.handleGoogleBookSelect(book.googleBooksId)}}>
-										<i class="fas fa-arrow-circle-right"></i>
+										<i className="fas fa-arrow-circle-right"></i>
 									</span>
 								</td>
 						

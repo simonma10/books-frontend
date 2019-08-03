@@ -11,6 +11,7 @@ class NavBar extends Component{
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleStatusFilterChange = this.handleStatusFilterChange.bind(this)
         this.handlePriorityFilterChange = this.handlePriorityFilterChange.bind(this)
+        this.handleLogout = this.handleLogout.bind(this)
     }
 
     handleSearchChange(e){
@@ -32,6 +33,10 @@ class NavBar extends Component{
         this.props.handleStatusFilterChange(e)
     }
 
+    handleLogout(){
+        this.props.handleLogout()
+    }
+
     render(){
         return (
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -39,6 +44,12 @@ class NavBar extends Component{
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
+                <div className="ml-2 mr-2">
+                    {   this.props.user.username === "" ? 
+                        <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target=".login-modal">Login</button> : 
+                        <div><span className="mr-1">{this.props.user.username}</span><button type="button" className="btn btn-outline-secondary btn-sm" onClick={this.handleLogout}>Logout</button> </div> 
+                    }
+                </div>
     
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">

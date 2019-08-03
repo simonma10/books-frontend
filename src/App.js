@@ -5,6 +5,7 @@ import NavBar from './components/NavBar'
 import BookList from './components/BookList'
 import BookEditModal from './components/BookEditModal'
 import YesNoModal from './components/YesNoModal'
+import LoginModal from './components/LoginModal'
 import CONFIG from './App-config'
 
 class App extends Component {
@@ -21,7 +22,8 @@ class App extends Component {
 				year: 0,
 				status: "none",
 				priority: 0,
-				googleBooksId:""
+				googleBooksId:"",
+				userid:""
 			},
 			modalMode:"edit",
 			searchTerm:"",
@@ -30,7 +32,18 @@ class App extends Component {
 			},
 			googleBooksData: {},
 			statusFilter: "none",
-			priorityFilter: "none"
+			priorityFilter: "none",
+			user:{
+				_id:"",
+				username: "",
+				email: "",
+				role: "",
+				authdata: ""
+			},
+			login:{
+				username:"",
+				password:""
+			}
 		}
 
 		this.handleListItemClick = this.handleListItemClick.bind(this)
@@ -45,11 +58,26 @@ class App extends Component {
 		this.handleSelectChange = this.handleSelectChange.bind(this)
 		this.handleStatusFilterChange = this.handleStatusFilterChange.bind(this)
 		this.handlePriorityFilterChange = this.handlePriorityFilterChange.bind(this)
+		this.handleLoginChange = this.handleLoginChange.bind(this)
+		this.handleLoginSubmit = this.handleLoginSubmit.bind(this)
+		this.handleLogout = this.handleLogout.bind(this)
+
+		this.state.user = JSON.parse(localStorage.getItem('user'))
+		/* if(user && user.username !== ""){
+			this.setState({
+				user: {
+					_id: user._id,
+					username: user.username,
+					email: user.email,
+					role: user.role,
+					authdata: user.authdata
+				}
+			})
+		} */
 	}
 
 	componentDidMount(){
 		this.getBookList()
-
 		// Initialize Bootstrap tooltips and popovers
 		window.$(function () {
 			window.$('[data-toggle="tooltip"]').tooltip()
@@ -67,10 +95,11 @@ class App extends Component {
 		//this.getGoogleBooksData(result[0].title)
 	}
 
-	getBookList(q = ""){
+	async getBookList(q = ""){
 		let param = (q === "" ? "" : "?title=" + q )
 		const url = CONFIG.baseUrl + param
-        axios.get(url)
+		const requestOptions = await this.getAuth()
+        axios.get(url, requestOptions)
       		.then((response) => {
         	this.setState({
 				books: response.data,
@@ -78,6 +107,7 @@ class App extends Component {
         	})
       	})
 		.catch((error) => {
+			console.log(error)
 			this.setState({
 				error: true
 			})
@@ -117,10 +147,11 @@ class App extends Component {
 		}
 	}
 
-	createBook(book){
+	async createBook(book){
 		//console.log(book)
 		const url = CONFIG.baseUrl
-		axios.post(url, book)
+		const requestOptions = await this.getAuth()
+		axios.post(url, book, requestOptions)
       		.then((response) => {
         	if (response.status === 200){
 				console.log(book.title, "created successfully")
@@ -134,9 +165,10 @@ class App extends Component {
 		});
 	}
 
-	deleteBook(id){
+	async deleteBook(id){
 		const url = CONFIG.baseUrl + "?id=" + id
-		axios.delete(url)
+		const requestOptions = await this.getAuth()
+		axios.delete(url, requestOptions)
       		.then((response) => {
         	if (response.status === 200){
 				console.log("deleted successfully")
@@ -150,9 +182,10 @@ class App extends Component {
 		});
 	}
 
-	updateBook(book){
+	async updateBook(book){
 		const url = CONFIG.baseUrl
-		axios.patch(url, book)
+		const requestOptions = await this.getAuth()
+		axios.patch(url, book, requestOptions)
       		.then((response) => {
         	if (response.status === 200){
 				console.log(book.title, "updated successfully")
@@ -166,10 +199,11 @@ class App extends Component {
 		});
 	}
 
-	getGoogleBooksData(title){
+	async getGoogleBooksData(title){
 		//console.log(book)
 		const url = CONFIG.searchUrl + "?q=" + title
-		axios.get(url)
+		const requestOptions = await this.getAuth()
+		axios.get(url, requestOptions)
       		.then((response) => {
 				//console.log(response.data)
 				this.setState({
@@ -234,7 +268,8 @@ class App extends Component {
 				author: "",
 				year: 0,
 				status: "",
-				priority: 0
+				priority: 0,
+				userid: this.state.user._id
 			},
 			googleBooksData: {}
 		})
@@ -301,7 +336,91 @@ class App extends Component {
 		})
 		this.filterBookList("priority", e)	
 	}
+
+	handleLoginChange(name, value){
+        this.setState({
+			login: {
+				...this.state.login,
+				[name]: value
+			}
+		})
+	}
+
+	handleLoginSubmit(e){
+		const url = CONFIG.loginUrl
+		const username = this.state.login.username
+		const password = this.state.login.password
+		const authdata = window.btoa(username + ":" + password)
+
+		const requestOptions={ 
+			headers: { 'Authorization': 'Basic ' + authdata }
+		}
+
+		axios.get(url,requestOptions)
+      	.then((response) => {
+			//console.log(response)
+
+			const u = response.data
+			// store user details and basic auth credentials in local storage 
+			// to keep user logged in between page refreshes
+			const user = {
+				_id:u._id,
+				username: u.username,
+				email: u.email,
+				role: u.role,
+				authdata: authdata
+			}
+
+            localStorage.setItem('user', JSON.stringify(user));
+			this.setState({
+				user: user,
+				login:{
+					username:"",
+					password:""
+				}
+			})
+			this.getBookList()
+
+      	})
+		.catch((error) => {
+			this.setState({
+				error: true
+			})
+		});
+	}
+
+	handleLogout(){
+		this.setState({
+			books:[],
+			booksCache:[],
+			activeBook: {
+				_id: "",
+				title:"",
+				author: "",
+				year: 0,
+				status: "none",
+				priority: 0,
+				googleBooksId:"",
+				userid:""
+			},
+			user:{
+				_id:"",
+				username:"",
+				email: "",
+				role: "",
+				authdata: ""
+			}
+		})
+		localStorage.removeItem('user')
+	}
 	
+	getAuth(){
+		const user = this.state.user
+		const requestOptions={ 
+			headers: { 'Authorization': 'Basic ' + user.authdata }
+		}
+		return requestOptions
+	}
 
 	render(){
 		return (
@@ -314,6 +433,8 @@ class App extends Component {
 					handleStatusFilterChange={this.handleStatusFilterChange}
 					priorityFilter={this.state.priorityFilter}
 					handlePriorityFilterChange={this.handlePriorityFilterChange}
+					user={this.state.user}
+					handleLogout={this.handleLogout}
 				></NavBar>
 				<BookList 
 					books={this.state.books}
@@ -331,6 +452,8 @@ class App extends Component {
 					handleGoogleBookSelect={this.handleGoogleBookSelect}
 				></BookEditModal>
 				<YesNoModal msg={this.state.yesNoModal.text + this.state.activeBook.title + '?'} handleOkClick={this.deleteActiveBook} ></YesNoModal>
+				<LoginModal login={this.state.login} handleChange={this.handleLoginChange} handleSubmit={this.handleLoginSubmit}></LoginModal>
+
 				<footer >
 					<p></p>
 					<p></p>

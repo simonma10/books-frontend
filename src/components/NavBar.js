@@ -38,6 +38,7 @@ class NavBar extends Component{
     }
 
     render(){
+        const username = this.props.user.username
         return (
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <span className="navbar-brand mb-0 h1"><i className="fas fa-book"></i> Funky Books</span>
@@ -45,9 +46,9 @@ class NavBar extends Component{
                     <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="ml-2 mr-2">
-                    {   this.props.user.username === "" ? 
+                    {   username === "" ? 
                         <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target=".login-modal">Login</button> : 
-                        <div><span className="mr-1">{this.props.user.username}</span><button type="button" className="btn btn-outline-secondary btn-sm" onClick={this.handleLogout}>Logout</button> </div> 
+                        <div><span className="mr-1">{ username }</span><button type="button" className="btn btn-outline-secondary btn-sm" onClick={this.handleLogout}>Logout</button> </div> 
                     }
                 </div>
     

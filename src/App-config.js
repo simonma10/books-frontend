@@ -1,7 +1,7 @@
 
 require('dotenv').config()
 
-const API_HOST = process.env.API_HOST || "http://localhost:4000"
+const API_HOST = process.env.API_HOST
 
 const CONFIG = {
     modalName: "bookEditModal",

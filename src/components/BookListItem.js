@@ -5,7 +5,7 @@ import Stars from './Stars'
 function BookListItem(props){
 
     let b = props.book
-    let thumbSrc="http://books.google.com/books/content?id="
+    let thumbSrc="https://books.google.com/books/content?id="
     if (b.googleBooksId && b.googleBooksId !== ""){
         thumbSrc += b.googleBooksId
     } else {

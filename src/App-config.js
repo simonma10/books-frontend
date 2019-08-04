@@ -1,7 +1,7 @@
 
 require('dotenv').config()
 
-const API_HOST = process.env.API_HOST
+const API_HOST = "https://limitless-headland-66330.herokuapp.com"
 
 const CONFIG = {
     modalName: "bookEditModal",

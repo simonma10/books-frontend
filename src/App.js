@@ -65,22 +65,12 @@ class App extends Component {
 		const localUser = JSON.parse(localStorage.getItem('user'))
 		if(localUser){
 			this.state.user = localUser
+			this.getBookList()
 		}
-		/* if(user && user.username !== ""){
-			this.setState({
-				user: {
-					_id: user._id,
-					username: user.username,
-					email: user.email,
-					role: user.role,
-					authdata: user.authdata
-				}
-			})
-		} */
+		
 	}
 
 	componentDidMount(){
-		this.getBookList()
 		// Initialize Bootstrap tooltips and popovers
 		window.$(function () {
 			window.$('[data-toggle="tooltip"]').tooltip()

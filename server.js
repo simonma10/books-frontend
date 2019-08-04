@@ -22,7 +22,6 @@ const init = (async () =>
 		});
 		app.listen(port);
 		console.log(`Server running on port ${port}`)
-		console.log(`API Host is ${process.env.API_PATH}`)
 	}
 
 ) 

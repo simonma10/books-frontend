@@ -2,6 +2,17 @@ import React from 'react'
 import CONFIG from '../App-config'
 import Stars from './Stars'
 
+function renderSpinner(){
+    const spinnerContainerStyle = {position: 'absolute', left: '0px', top: '0px'}
+    return (
+		<div className="col-12 text-center mt-3" style={spinnerContainerStyle}>
+			<div className="spinner-border text-secondary" role="status">
+				<span className="sr-only">Loading...</span>
+			</div>
+		</div>
+	)
+}
+
 function BookListItem(props){
 
     let b = props.book
@@ -21,7 +32,10 @@ function BookListItem(props){
         snippet = snippet.replace(/&#39;/g, "'")
     }
 
+    const snippetContainerStyle = {position: 'relative'}
+
     return (
+
         <div className="card">
             {/* card-header: because card-body used for collapse element */}
             <div className="card-header">
@@ -46,9 +60,12 @@ function BookListItem(props){
                             </div>
                              {/* end: Title & Author */}
                             
-                            <div className="col-6">
+                            
+                            <div className="col-6" style={snippetContainerStyle}>
                                 <p><small>{snippet}</small></p>
+                                {props.bookUpdatingId === props.book._id ? renderSpinner() : <span></span> }
                             </div>
+                        
 
                             {/* Action Buttons */}
                             <div className="col-3">

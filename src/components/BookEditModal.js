@@ -106,7 +106,7 @@ class BookEditModal extends Component {
                                     </div>
                                 </div>
                                 <div>
-                                    <GoogleBooksList books={this.props.googleBooksData} handleGoogleBookSelect={this.handleGoogleBookSelect}></GoogleBooksList>
+                                    <GoogleBooksList books={this.props.googleBooksData} isGoogleLoading={this.props.isGoogleLoading} handleGoogleBookSelect={this.handleGoogleBookSelect}></GoogleBooksList>
                                 </div>
                             </div>
 

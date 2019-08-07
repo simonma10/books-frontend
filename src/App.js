@@ -69,7 +69,7 @@ class App extends Component {
 		this.handleLogout = this.handleLogout.bind(this)
 
 		const localUser = JSON.parse(localStorage.getItem('user'))
-		if(localUser.username){
+		if(localUser){
 			this.state.user = {
 					username: localUser.username,
 					authdata: localUser.authdata,

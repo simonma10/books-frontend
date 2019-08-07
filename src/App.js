@@ -7,6 +7,7 @@ import BookEditModal from './components/BookEditModal'
 import YesNoModal from './components/YesNoModal'
 import LoginModal from './components/LoginModal'
 import CONFIG from './App-config'
+import Toaster from './components/Toaster'
 
 class App extends Component {
 
@@ -43,6 +44,11 @@ class App extends Component {
 			login:{
 				username:"",
 				password:""
+			},
+			status:{
+				isBookListLoading: false,
+				isGoogleLoading: false,
+				bookUpdatingId: false
 			}
 		}
 
@@ -64,29 +70,53 @@ class App extends Component {
 
 		const localUser = JSON.parse(localStorage.getItem('user'))
 		if(localUser){
-			this.state.user = localUser
-		}
-		/* if(user && user.username !== ""){
-			this.setState({
-				user: {
-					_id: user._id,
-					username: user.username,
-					email: user.email,
-					role: user.role,
-					authdata: user.authdata
+			this.state.user = {
+					username: localUser.username,
+					authdata: localUser.authdata,
+					_id: localUser._id,
+					email: localUser.email,
+					role: localUser.role
 				}
-			})
-		} */
+		}
+
 	}
 
 	componentDidMount(){
-		this.getBookList()
+		
+		if (this.state.user.authdata){
+			this.setState({
+				status: {...this.state.status, isBookListLoading: true}
+			})
+			this.getBookList("", this.state.user.authdata)
+		}
+		
+		this.toaster = React.createRef()
+
 		// Initialize Bootstrap tooltips and popovers
 		window.$(function () {
 			window.$('[data-toggle="tooltip"]').tooltip()
 			window.$('[data-toggle="popover"]').popover()
-			window.$('.toast').toast()
+			window.$('.toast').toast({autohide: true, delay: 5000})
 		})
+	}
+
+	async getLocalUser(){
+		const localUser = JSON.parse(localStorage.getItem('user'))
+		if(localUser.username){
+			console.log('localUser:', localUser)
+			this.setState({
+				user: {
+					username: localUser.username,
+					authdata: localUser.authdata,
+					_id: localUser._id,
+					email: localUser.email,
+					role: localUser.role
+				}
+			})
+			console.log('state.user', this.state.user)
+			return localUser.authdata
+		}
+		return ""
 	}
 
 	setActiveBook(id){
@@ -95,24 +125,32 @@ class App extends Component {
 			activeBook: result[0],
 			modalMode: "edit"
 		})
-		//this.getGoogleBooksData(result[0].title)
 	}
 
-	async getBookList(q = ""){
+	getBookList(q = "", auth = ""){
+		this.setState({
+			status: {...this.state.status, isBookListLoading: true}
+		}) 
 		let param = (q === "" ? "" : "?title=" + q )
 		const url = CONFIG.baseUrl + param
-		const requestOptions = await this.getAuth()
+		const authdata = auth !== "" ? auth : this.state.user.authdata
+		const requestOptions = {
+			headers: { 'Authorization': 'Basic ' + authdata }
+		}
         axios.get(url, requestOptions)
       		.then((response) => {
         	this.setState({
 				books: response.data,
-				booksCache: response.data
+				booksCache: response.data,
+				status: {...this.state.status, isBookListLoading: false}
         	})
       	})
 		.catch((error) => {
 			console.log(error)
+			this.toaster.current.addToast({message: "Error retrieving book list... Please try again."})
 			this.setState({
-				error: true
+				error: true,
+				status: {...this.state.status, isBookListLoading: false}
 			})
 		});
 	}
@@ -158,6 +196,7 @@ class App extends Component {
       		.then((response) => {
         	if (response.status === 200){
 				console.log(book.title, "created successfully")
+				this.toaster.current.addToast({message: `Book added: '${book.title}'`})
 				this.getBookList()
 			}
       	})
@@ -165,16 +204,18 @@ class App extends Component {
 			this.setState({
 				error: true
 			})
+			this.toaster.current.addToast({message: "Couldn't create book... Please try again."})
 		});
 	}
 
-	async deleteBook(id){
+	async deleteBook(id, title){
 		const url = CONFIG.baseUrl + "?id=" + id
 		const requestOptions = await this.getAuth()
 		axios.delete(url, requestOptions)
       		.then((response) => {
         	if (response.status === 200){
-				console.log("deleted successfully")
+				//console.log("deleted successfully")
+				this.toaster.current.addToast({message: `Book deleted: '${title}'`})
 				this.getBookList()
 			}
       	})
@@ -182,41 +223,56 @@ class App extends Component {
 			this.setState({
 				error: true
 			})
+			this.toaster.current.addToast({message: "Couldn't delete book... Please try again."})
 		});
 	}
 
 	async updateBook(book){
+		this.setState({
+			status: {...this.status, bookUpdatingId: book._id}
+		})
 		const url = CONFIG.baseUrl
 		const requestOptions = await this.getAuth()
 		axios.patch(url, book, requestOptions)
       		.then((response) => {
         	if (response.status === 200){
-				console.log(book.title, "updated successfully")
+				//console.log(book.title, "updated successfully")
+				this.setState({
+					status: {...this.status, bookUpdatingId: ""}
+				})
+				this.toaster.current.addToast({message: `Book updated: '${book.title}'`})
 				this.getBookList()
 			}
       	})
 		.catch((error) => {
 			this.setState({
-				error: true
+				error: true,
+				status: {...this.status, bookUpdatingId: ""}
 			})
+			this.toaster.current.addToast({message: "Couldn't update book... Please try again."})
 		});
 	}
 
 	async getGoogleBooksData(title){
-		//console.log(book)
+		this.setState({
+			status: {...this.state.status, isGoogleLoading: true}
+		}) 
 		const url = CONFIG.searchUrl + "?q=" + title
 		const requestOptions = await this.getAuth()
 		axios.get(url, requestOptions)
       		.then((response) => {
 				//console.log(response.data)
 				this.setState({
-					googleBooksData: response.data
+					googleBooksData: response.data,
+					status: {...this.state.status, isGoogleLoading: false}
 			  	})
       	})
 		.catch((error) => {
 			this.setState({
-				error: true
+				error: true,
+				status: {...this.state.status, isGoogleLoading: false}
 			})
+			this.toaster.current.addToast({message: "Couldn't get Google Books data... Please try again."})
 		});
 
 	}
@@ -258,8 +314,8 @@ class App extends Component {
 	}
 
 	deleteActiveBook(){
-		console.log('delete ', this.state.activeBook._id)
-		this.deleteBook(this.state.activeBook._id)
+		//console.log('delete ', this.state.activeBook._id)
+		this.deleteBook(this.state.activeBook._id, this.state.activeBook.title)
 	}
 
 	handleNewClick(){
@@ -382,6 +438,7 @@ class App extends Component {
 					password:""
 				}
 			})
+			this.toaster.current.addToast({message: `Login success!  Welcome ${user.username}`})
 			this.getBookList()
 
       	})
@@ -389,10 +446,13 @@ class App extends Component {
 			this.setState({
 				error: true
 			})
+			console.error(error)
+			this.toaster.current.addToast({message: `Login failed!  Please try again.`})
 		});
 	}
 
 	handleLogout(){
+		this.toaster.current.addToast({message: `Logged out successfully.`})
 		this.setState({
 			books:[],
 			booksCache:[],
@@ -418,9 +478,8 @@ class App extends Component {
 	}
 	
 	getAuth(){
-		const user = this.state.user
 		const requestOptions={ 
-			headers: { 'Authorization': 'Basic ' + user.authdata }
+			headers: { 'Authorization': `Basic ${this.state.user.authdata}` }
 		}
 		return requestOptions
 	}
@@ -439,11 +498,14 @@ class App extends Component {
 					user={this.state.user}
 					handleLogout={this.handleLogout}
 				></NavBar>
+				
 				<BookList 
 					books={this.state.books}
 					clickHandler={this.handleListItemClick}
 					selectHandler={this.handleSelectChange}
 					newHandler={this.handleNewClick}
+					isLoading={this.state.status.isBookListLoading}
+					bookUpdatingId={this.state.status.bookUpdatingId}
 				></BookList>
 				<BookEditModal
 					book={this.state.activeBook}
@@ -451,12 +513,13 @@ class App extends Component {
 					handleSave={this.handleEditModalSave}
 					mode={this.state.modalMode}
 					googleBooksData={this.state.googleBooksData}
+					isGoogleLoading={this.state.status.isGoogleLoading}
 					handleGoogleLookup={this.handleGoogleLookup}
 					handleGoogleBookSelect={this.handleGoogleBookSelect}
 				></BookEditModal>
 				<YesNoModal msg={this.state.yesNoModal.text + this.state.activeBook.title + '?'} handleOkClick={this.deleteActiveBook} ></YesNoModal>
 				<LoginModal login={this.state.login} handleChange={this.handleLoginChange} handleSubmit={this.handleLoginSubmit}></LoginModal>
-
+				<Toaster ref={this.toaster}></Toaster>
 				<footer >
 					<p></p>
 					<p></p>

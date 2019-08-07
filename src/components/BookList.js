@@ -6,41 +6,61 @@ class BookList extends Component {
 
     renderBookListItems(){
         if(this.props.books){
-            //console.log(this.props.books)
             return this.props.books.map((b)=>[
-                <BookListItem book={b} key={b._id} clickHandler={this.props.clickHandler} selectHandler={this.props.selectHandler}></BookListItem>
+                <BookListItem book={b} bookUpdatingId={this.props.bookUpdatingId} key={b._id} clickHandler={this.props.clickHandler} selectHandler={this.props.selectHandler}></BookListItem>
            ]
                
            )
         }
     }
 
+    renderSpinner(){
+        return (
+            <div className="text-center mt-3">
+                <div className="spinner-border text-secondary" role="status">
+                    <span className="sr-only">Loading...</span>
+                </div>
+            </div>
+        )
+    }
+
+    renderBookList(){
+        return (
+            <div>
+                <div className="accordion" id="accordionList">
+                    {this.renderBookListItems()}
+                </div>
+                <div className="d-flex justify-content-end">
+                    <div className="mr-2">
+                        <span data-toggle="tooltip" data-placement="top" title="new book">
+                            <span 
+                                className="mr-3 text-success"
+                                data-toggle="modal"
+                                data-target={"#" + CONFIG.modalName}
+                                onClick={()=>{this.props.newHandler()}}
+                            >
+                                <span style={{fontSize: "1.2em"}}>
+                                    <i className="far fa-plus-square"></i>
+                                </span>
+                                <span className="ml-2">Add</span>
+                                
+
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        )
+
+    }
+
     render(){
         return (
             <div className="row justify-content-center">
                 <div className="col-10">
-                    <div className="accordion" id="accordionList">
-                        {this.renderBookListItems()}
-                    </div>
-                    <div className="d-flex justify-content-end">
-                        <div className="mr-2">
-                            <span data-toggle="tooltip" data-placement="top" title="new book">
-                                <span 
-                                    className="mr-3 text-success"
-                                    data-toggle="modal"
-                                    data-target={"#" + CONFIG.modalName}
-                                    onClick={()=>{this.props.newHandler()}}
-                                >
-                                    <span style={{fontSize: "1.2em"}}>
-                                        <i className="far fa-plus-square"></i>
-                                    </span>
-                                    <span className="ml-2">Add</span>
-                                    
-
-                                </span>
-                            </span>
-                        </div>
-                    </div>
+                    { this.renderBookList() }
+                    { this.props.isLoading ? this.renderSpinner() :  <span></span>}
+                   
                 </div>
             </div>
         )

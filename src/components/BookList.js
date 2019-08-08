@@ -7,7 +7,14 @@ class BookList extends Component {
     renderBookListItems(){
         if(this.props.books){
             return this.props.books.map((b)=>[
-                <BookListItem book={b} bookUpdatingId={this.props.bookUpdatingId} key={b._id} clickHandler={this.props.clickHandler} selectHandler={this.props.selectHandler}></BookListItem>
+                <BookListItem 
+                    book={b}
+                    bookUpdatingId={this.props.bookUpdatingId}
+                    key={b._id}
+                    clickHandler={this.props.clickHandler}
+                    selectHandler={this.props.selectHandler}
+                    handleStarClick={this.props.handleStarClick}
+                ></BookListItem>
            ]
                
            )
@@ -57,7 +64,7 @@ class BookList extends Component {
     render(){
         return (
             <div className="row justify-content-center">
-                <div className="col-10">
+                <div className="col-11">
                     { this.renderBookList() }
                     { this.props.isLoading ? this.renderSpinner() :  <span></span>}
                    

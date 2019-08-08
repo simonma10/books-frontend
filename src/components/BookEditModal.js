@@ -77,7 +77,7 @@ class BookEditModal extends Component {
                                     </div>
                                 </div>  
 
-                               
+                               {/*
                                 <div className="row">
                                     <div className="form-group col">
                                         <div className="input-group">
@@ -105,6 +105,8 @@ class BookEditModal extends Component {
                                         </div>
                                     </div>
                                 </div>
+                                */}
+                                
                                 <div>
                                     <GoogleBooksList books={this.props.googleBooksData} isGoogleLoading={this.props.isGoogleLoading} handleGoogleBookSelect={this.handleGoogleBookSelect}></GoogleBooksList>
                                 </div>

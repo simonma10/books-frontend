@@ -67,6 +67,7 @@ class App extends Component {
 		this.handleLoginChange = this.handleLoginChange.bind(this)
 		this.handleLoginSubmit = this.handleLoginSubmit.bind(this)
 		this.handleLogout = this.handleLogout.bind(this)
+		this.handleStarClick = this.handleStarClick.bind(this)
 
 		const localUser = JSON.parse(localStorage.getItem('user'))
 		if(localUser){
@@ -484,6 +485,29 @@ class App extends Component {
 		return requestOptions
 	}
 
+	async handleStarClick(index, bookId){
+		console.log(index, bookId)
+		
+		for (let i = 0; i < this.state.books.length; i ++){
+			if (this.state.books[i]._id === bookId){
+				await this.setActiveBook(bookId)
+				
+				await this.setState({
+					activeBook: {
+						...this.state.activeBook,
+						priority: index
+					}	
+				})
+				console.log(this.state.activeBook)
+				
+				await this.updateBook(this.state.activeBook)
+				
+			}
+		}
+	
+		
+	}
+
 	render(){
 		return (
 			<div>
@@ -504,6 +528,7 @@ class App extends Component {
 					clickHandler={this.handleListItemClick}
 					selectHandler={this.handleSelectChange}
 					newHandler={this.handleNewClick}
+					handleStarClick={this.handleStarClick}
 					isLoading={this.state.status.isBookListLoading}
 					bookUpdatingId={this.state.status.bookUpdatingId}
 				></BookList>

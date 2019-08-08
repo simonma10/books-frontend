@@ -1,21 +1,10 @@
 # To Do #
 
-loading indicator for google books list
-
-spinner inside bookListItem when updating book
-
-Edit Stars in bookListItem component
-
-change editBookModal to not update priority/year/status
-
-
-favicon
-
-Name...  globalise name variable.
 
 tidy formatting on logged in name (align vertically)
 
-store book cover thumbnails
+navbar and notifications should be fixed to top of window
+
 
 For Admin Users:
 list Users
@@ -38,6 +27,13 @@ Preview Google Books details before adding description
 
 
 Mobile app to read barcodes and record book details.
+
+favicon
+
+Name...  globalise name variable.
+
+store book cover thumbnails
+
 
 Fix error on Search box Enter key pressed: Uncaught TypeError: Cannot read property 'type' of undefined
     at e.setFieldValue (onloadwff.js:71)
@@ -74,6 +70,18 @@ Authenticate individual users
 
 Deploy to Mongodb atlas, Heroku.
 
+### Release 0.3.0 ###
+
 Use notifications for book updates, deletes, creates.
 
 Spinner on load
+
+loading indicator for google books list
+
+spinner inside bookListItem when updating book
+
+### Release 0.4.0 ###
+
+Edit Stars in bookListItem component
+
+change editBookModal to not update priority/year/status

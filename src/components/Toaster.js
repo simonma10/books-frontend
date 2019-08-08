@@ -32,8 +32,8 @@ class Toaster extends Component {
 
     render(){
         const topDivStyle = {
-            position: 'absolute',
-            top: 50,
+            position: 'fixed',
+            top: 60,
             right: 10,
             minHeight: '200px',
         }
@@ -63,7 +63,7 @@ class Toaster extends Component {
                       })
                     return (
                         <div className="toast" style={toastStyle} role="alert" key={index} aria-live="assertive" aria-atomic="true" data-delay="2000">
-                            <div className="toast-header">
+                            <div className="toast-header bg-light">
                                 <strong className="mr-auto">Funky Books</strong>
                                 <small>recently</small>
                                 <button type="button" className="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">

@@ -39,16 +39,17 @@ class NavBar extends Component{
 
     render(){
         const username = this.props.user.username || ""
+        //const navbarStyle = {backgroundColor: "#ccd3d6"}
         return (
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar sticky-top navbar-expand-lg navbar-light bg-light" >  {/*  style={navbarStyle}   */} 
                 <span className="navbar-brand mb-0 h1"><i className="fas fa-book"></i> Funky Books</span>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
-                <div className="ml-2 mr-2">
+                <div className="ml-4 mr-2">
                     {   username === "" ? 
                         <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target=".login-modal">Login</button> : 
-                        <div><span className="mr-1">{username}</span><button type="button" className="btn btn-outline-secondary btn-sm" onClick={this.handleLogout}>Logout</button> </div> 
+                        <div className="row"><div className="mr-1 d-flex flex-column justify-content-center">{username}</div><button type="button" className="btn btn-outline-secondary btn-sm" onClick={this.handleLogout}>Logout</button> </div> 
                     }
                 </div>
     

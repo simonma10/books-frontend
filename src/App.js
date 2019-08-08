@@ -70,7 +70,7 @@ class App extends Component {
 		this.handleStarClick = this.handleStarClick.bind(this)
 
 		const localUser = JSON.parse(localStorage.getItem('user'))
-		if(localUser.username){
+		if(localUser){
 			this.state.user = {
 					username: localUser.username,
 					authdata: localUser.authdata,

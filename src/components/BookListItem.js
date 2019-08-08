@@ -52,7 +52,7 @@ function BookListItem(props){
 
                             {/* Title & Author */}
                             <div className="col-3">
-                                <h5 className="mt-0">{b.title || "loading"} </h5>
+                                <h6 className="mt-0"><strong>{b.title || "loading"} </strong></h6>
                                 <div className="d-flex flex-row justify-content-between">
                                     <div>{b.author}   <span>{b.year ? <span>({b.year})</span> : <span></span>  }</span></div>
                                 </div>
@@ -85,7 +85,7 @@ function BookListItem(props){
                                         </div>
 
                                         <div className="mr-1 ml-3">
-                                            <Stars priority={b.priority}></Stars>
+                                            <Stars priority={b.priority} bookId={b._id} handleStarClick={(i, id)=>props.handleStarClick(i, id)}></Stars>
                                         </div>
 
                                     </div>

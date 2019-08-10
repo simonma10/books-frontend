@@ -38,7 +38,6 @@ class UserList extends Component {
 		return {
 			headers: { 'Authorization': 'Basic ' + authdata }
         }
-
     }
 
     getUsers(){
@@ -75,8 +74,8 @@ class UserList extends Component {
 		});
     }
 
-    deleteUser(id){
-		const url = CONFIG.usersUrl + "?id=" + id
+    deleteUser(user){
+		const url = CONFIG.usersUrl + "?id=" + user._id
 		const authdata = this.state.user.authdata
 		const requestOptions = {
 			headers: { 'Authorization': 'Basic ' + authdata }
@@ -127,6 +126,7 @@ class UserList extends Component {
     }
     handleEditSubmit(){
         console.log('update User:\n', this.state.editUser)
+        this.updateUser(this.state.editUser)
     }
 
     renderUserList(){

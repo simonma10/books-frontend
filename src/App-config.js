@@ -9,6 +9,7 @@ const CONFIG = {
     searchUrl: API_HOST + "/api/v1/external/google/volumes",
     routesUrl: API_HOST + "/routes",
     loginUrl: API_HOST + "/login",
+    usersUrl: API_HOST + "/users",
     statusOptions: [
         {name: "None", value: "none"},
         {name: "Wishlist", value: "wishlist" },

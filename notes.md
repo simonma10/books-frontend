@@ -1,10 +1,6 @@
 # To Do #
 
-
-tidy formatting on logged in name (align vertically)
-
-navbar and notifications should be fixed to top of window
-
+show spinner on login
 
 For Admin Users:
 list Users
@@ -85,3 +81,10 @@ spinner inside bookListItem when updating book
 Edit Stars in bookListItem component
 
 change editBookModal to not update priority/year/status
+
+tidy formatting on logged in name (align vertically)
+
+navbar and notifications should be fixed to top of window
+
+### Release 0.5.0 ###
+

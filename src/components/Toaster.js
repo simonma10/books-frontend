@@ -4,9 +4,7 @@ class Toaster extends Component {
     constructor(props){
         super(props)
         this.state={
-            toasts:[
-                {message: "Welcome to Funky Books! \n New Notifications appear here."},
-            ]
+            toasts:[]
         }
         this.removeToast = this.removeToast.bind(this)
     }
@@ -33,7 +31,7 @@ class Toaster extends Component {
     render(){
         const topDivStyle = {
             position: 'fixed',
-            top: 60,
+            top: 120,
             right: 10,
             minHeight: '200px',
         }

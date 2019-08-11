@@ -18,7 +18,8 @@ class UserList extends Component {
                 email: "",
                 role: "",
                 active: true
-            }
+            },
+            mode: ""
         }
 
         this.handleEditClick = this.handleEditClick.bind(this)
@@ -75,21 +76,41 @@ class UserList extends Component {
     }
 
     deleteUser(user){
+        console.log('deleteUser', user)
 		const url = CONFIG.usersUrl + "?id=" + user._id
-		const authdata = this.state.user.authdata
-		const requestOptions = {
-			headers: { 'Authorization': 'Basic ' + authdata }
-        }
-		axios.delete(url, requestOptions)
+		
+		axios.delete(url, this.getRequestOptions())
       		.then((response) => {
         	if (response.status === 200){
 				console.log("User deleted successfully")
-				this.getUserList()
+				this.getUsers()
 			}
       	})
 		.catch((error) => {
 			console.log(error)
-		});
+		})
+    }
+
+    createUser(user){
+		const url = CONFIG.usersUrl
+		
+		axios.post(url, user, this.getRequestOptions())
+      		.then((response) => {
+        	if (response.status === 200){
+				console.log(user.username, "created successfully")
+				//this.toaster.current.addToast({message: `User added: '${user.username}'`})
+				this.getUsers()
+			}
+      	})
+		.catch((error) => {
+			console.log(error)
+		})
+    }
+    
+    toggleActive(user){
+        let updateUser = user
+        updateUser.active = !updateUser.active
+        this.updateUser(updateUser)
     }
     
     handleEditClick(user){
@@ -121,12 +142,17 @@ class UserList extends Component {
                 [name]: value
             }
         })
-        console.log(name, value)
+        //console.log(name, value)
 
     }
     handleEditSubmit(){
-        console.log('update User:\n', this.state.editUser)
-        this.updateUser(this.state.editUser)
+        //console.log('update User:\n', this.state.editUser)
+        if (this.state.mode === "New"){
+            this.createUser(this.state.editUser)
+        } else {
+            this.updateUser(this.state.editUser)
+        }
+        
     }
 
     renderUserList(){
@@ -147,13 +173,19 @@ class UserList extends Component {
                         </button>
                     </div>
                     <div className="col-1">
-                        <button className="btn btn-warning btn-sm">
+                        <button 
+                            className="btn btn-warning btn-sm"
+                            onClick={()=>{this.toggleActive(u)}}
+                        >
                             {u.active ? <span>Deactivate</span> : <span>Activate</span>}
                         </button>
                     </div>
                     
                     <div className="col-1">
-                        <button className="btn btn-danger btn-sm">Delete</button>
+                        <button 
+                            className="btn btn-danger btn-sm"
+                            onClick={()=>{this.deleteUser(u)}}
+                        >Delete</button>
                     </div>
                 </div>
            ]
@@ -175,8 +207,13 @@ class UserList extends Component {
     render(){
         return(
             <div>
+                <nav className="navbar sticky-top navbar-expand-lg navbar-light bg-light" >  {/*  style={navbarStyle}   */} 
+                    <span className="navbar-brand mb-0 h1">Users</span>
+                </nav>
                 <div className="row justify-content-center">
+                   
                     <div className="col-11">
+                        
                         <div className="row">
                             <div className="col-3"><strong>Username</strong></div>
                             <div className="col-5"><strong>Email</strong></div>

@@ -140,22 +140,26 @@ class App extends Component{
     render(){
         //this.appToaster.current.addToast({message: "Blah!"})
         return(
-            <Router>
+            <div>
                 <NavBar
-					user={this.state.user}
-					handleLogout={this.handleLogout}
+                    user={this.state.user}
+                    handleLogout={this.handleLogout}
                 ></NavBar>
+                
                 <Toaster ref={this.appToaster}></Toaster>
                 <LoginModal login={this.state.login} handleChange={this.handleLoginChange} handleSubmit={this.handleLoginSubmit}></LoginModal>
+                
+                <Router>
+                    <Route path="/" exact 
+                        render={props => <BookListContainer ref={this.bookListContainer} {...props} user={this.state.user} />}
+                    />
+                    <Route path="/users/" component={UserList} />
+                </Router>
 
 
-                <Route path="/" exact 
-                    render={props => <BookListContainer ref={this.bookListContainer} {...props} user={this.state.user} />}
-                />
-                <Route path="/users/" component={UserList} />
-
-
-            </Router>
+            </div>
+            
+           
         )
     }
 

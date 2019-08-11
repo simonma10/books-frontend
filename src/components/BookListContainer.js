@@ -360,7 +360,7 @@ class BookListContainer extends Component{
     }
     
     async handleStarClick(index, bookId){
-		console.log(index, bookId)
+		//console.log(index, bookId)
 		
 		for (let i = 0; i < this.state.books.length; i ++){
 			if (this.state.books[i]._id === bookId){
@@ -372,7 +372,7 @@ class BookListContainer extends Component{
 						priority: index
 					}	
 				})
-				console.log(this.state.activeBook)
+				//console.log(this.state.activeBook)
 				
 				await this.updateBook(this.state.activeBook)
 				

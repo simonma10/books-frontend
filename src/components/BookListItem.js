@@ -6,7 +6,7 @@ function renderSpinner(){
     const spinnerContainerStyle = {position: 'absolute', left: '0px', top: '0px'}
     return (
 		<div className="col-12 text-center mt-3" style={spinnerContainerStyle}>
-			<div className="spinner-border text-secondary" role="status">
+			<div className="spinner-grow text-secondary" role="status">
 				<span className="sr-only">Loading...</span>
 			</div>
 		</div>

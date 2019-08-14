@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import axios from 'axios'
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import NavBar from './components/NavBar'
 import './App.css'
 import CONFIG from './App-config'
@@ -24,7 +24,8 @@ class App extends Component{
 			login:{
 				username:"",
 				password:""
-			}
+			},
+			redirect: false
         }
 
         this.handleLoginChange = this.handleLoginChange.bind(this)
@@ -130,9 +131,23 @@ class App extends Component{
 				email: "",
 				role: "",
 				authdata: ""
-			}
+			},
+			redirect: true
 		})
 		localStorage.removeItem('user')
+	}
+
+	setRedirect() {
+		this.setState({
+			redirect: true
+		})
+	}
+
+
+	renderRedirect(){
+		if (this.state.redirect) {
+			return <Redirect to='/' />
+		}
 	}
 
     
@@ -146,7 +161,7 @@ class App extends Component{
                     handleLogout={this.handleLogout}
                 ></NavBar>
                 
-                <Toaster ref={this.appToaster}></Toaster>
+               
                 <LoginModal login={this.state.login} handleChange={this.handleLoginChange} handleSubmit={this.handleLoginSubmit}></LoginModal>
                 
                 <Router>
@@ -154,8 +169,9 @@ class App extends Component{
                         render={props => <BookListContainer ref={this.bookListContainer} {...props} user={this.state.user} />}
                     />
                     <Route path="/users/" component={UserList} />
+					{this.renderRedirect()}
                 </Router>
-
+				<Toaster ref={this.appToaster}></Toaster>
 
             </div>
             
